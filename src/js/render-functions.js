@@ -32,6 +32,11 @@ export function imgGallery() {
   lightbox.refresh();
 }
 
+export const lightBox = new SimpleLightbox('.gallery a',{
+    captionsData: 'alt',
+    captionDelay: 325,
+});
+
 export function showLoader() {
   const loader = document.querySelector('.loader');
   loader.style.display = 'block';
@@ -40,4 +45,14 @@ export function showLoader() {
 export function hideLoader() {
   const loader = document.querySelector('.loader');
   loader.style.display = 'none';
+}
+
+export function hideButton() {
+  const loadButton = document.querySelector('.loadButton')
+  loadButton.style.display = 'none';
+}
+
+export function showButton() {
+  const loadButton = document.querySelector('.loadButton')
+  loadButton.style.display = 'block';
 }
