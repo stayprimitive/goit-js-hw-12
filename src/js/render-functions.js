@@ -24,14 +24,6 @@ export function renderElement(arr) {
     .join('');
 }
 
-export function imgGallery() {
-  const lightbox = new SimpleLightbox('.gallery a', {
-    captionDelay: 325,
-    captionsData: 'alt',
-  });
-  lightbox.refresh();
-}
-
 export const lightBox = new SimpleLightbox('.gallery a',{
     captionsData: 'alt',
     captionDelay: 325,

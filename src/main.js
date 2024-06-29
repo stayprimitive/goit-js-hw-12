@@ -24,7 +24,9 @@ const loadButton = document.querySelector('.loadButton')
 
 let page;
 let userValue;
-let maxPage = 3;
+let maxPage;
+let maxHits = 0;
+let perPage = 15;
 
 hideLoader();
 hideButton();
@@ -37,13 +39,28 @@ showLoader();
     hideButton();
     gallery.innerHTML = '';
   
-userValue = input.value;
-  if (!userValue) return;
-  
+userValue = input.value.trim();
+  if (!userValue) {
+    hideLoader();
+    iziToast.error({
+          message:
+            "Please enter something",
+            position: 'bottomCenter',
+            maxWidth: 350,
+            backgroundColor: 'red',
+            messageColor: 'white',
+        });
+    return;
+  }
+
+
     page = 1;
   showLoader();
 
-try {
+  try {
+    const max = await getImages(userValue);
+    maxHits = Math.ceil(max.totalHits / perPage);
+
   const data = await getImages(userValue, page);
   if (data.hits.length === 0) {
           hideLoader();
@@ -57,22 +74,12 @@ try {
         });
             return;
       }
-  if (data.totalHits > 0) {
-                 hideLoader();
-  iziToast.info({
-          message:
-           'Пошук успішний, але я обмежив кількість сторінок, щоб Ви дійшли до останньої',
-            position: 'center',
-            maxWidth: 350,
-            backgroundColor: 'green',
-            messageColor: 'white',
-        });
 
-      }
-
+  
+  
         const markup = renderElement(data.hits);
         gallery.innerHTML = markup;
-    } catch (err) { showMessage(err) }
+    } catch (err) {(err) }
 
   
     
@@ -92,10 +99,11 @@ async function loadButtonClick() {
     try {
         const data = await getImages(userValue, page);
         const markup = renderElement(data.hits);
-        gallery.insertAdjacentHTML('beforeend', markup);
+      gallery.insertAdjacentHTML('beforeend', markup);
+          lightBox.refresh();
     } catch (err) { console.log(err) }
 
-    lightBox.refresh();
+
     hideLoader();
     showButton();
 
@@ -124,5 +132,9 @@ function refresher() {
             backgroundColor: 'red',
             messageColor: 'white',
         });
+  }
+
+  if (page >= maxHits) {
+    hideButton();
   }
 }
